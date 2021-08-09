@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevExpress.Xpf.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +15,7 @@ using System.Windows.Shapes;
 
 namespace SaveToFileWPF.Screens.MainWindow
 {
-    /// <summary>
-    /// Interaction logic for MainWindowView.xaml
-    /// </summary>
-    public partial class MainWindowView : Window
+    public partial class MainWindowView : ThemedWindow
     {
         public MainWindowView()
         {
