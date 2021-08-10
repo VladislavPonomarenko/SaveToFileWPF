@@ -2,16 +2,19 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net5.0-windows</TargetFramework>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Caliburn.Micro" Version="4.0.173" />
-		<PackageReference Include="DevExpress.Data" Version="21.1.5" />
 		<PackageReference Include="DevExpress.Wpf.Core" Version="21.1.*-*" />
 		<PackageReference Include="devexpress.wpf.spreadsheet" Version="21.1.5" />
 		<PackageReference Include="DevExpress.Wpf.Themes.All" Version="21.1.*-*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SaveToFileBLL\SaveToFileBLL.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
