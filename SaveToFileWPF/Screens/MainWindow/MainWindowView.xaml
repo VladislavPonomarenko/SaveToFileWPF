@@ -2,25 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars" 
         Title="MainWindow" Height="600" Width="800">
     <Grid>
-        <dxg:GridControl ItemsSource="{Binding UserVMs}"
+        <dxg:GridControl x:Name="gcMainGrid"
+            ItemsSource="{Binding UserVMs}"
                          AutoGenerateColumns="AddNew"
                          EnableSmartColumnsGeneration="True"
                          SelectionMode="Row"
                          SelectedItems="{Binding SelectedVMs}">
             <dxg:GridControl.View>
-                <dxg:TableView ShowTotalSummary="True">
-                    <dxg:TableView.RowCellMenuCustomizations>
-                        <dxb:BarButtonItem x:Name="bbiExportToCSV" Content="Экспорт в CSV"  
-                                           Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}},
-                                           Path=DataContext.ExportToCSVCommand}"/>
-                        <dxb:BarButtonItem x:Name="bbiExportToTXT" Content="Экспорт в TXT"  
-                                           Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}},
-                                           Path=DataContext.ExportToTXTCommand}"/>
-                    </dxg:TableView.RowCellMenuCustomizations>
-                </dxg:TableView>
+                <dxg:TableView ShowGridMenu="TableView_ShowGridMenu"/>
             </dxg:GridControl.View>
         </dxg:GridControl>
     </Grid>

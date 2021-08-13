@@ -1,9 +1,7 @@
 ﻿using SaveToFileBLL.Interfaces;
-using SaveToFileBLL.Services;
-using SaveToFileWPF.Commands;
-using SaveToFileWPF.Helpers;
 using SaveToFileWPF.ViewModels;
 using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 
@@ -13,33 +11,29 @@ namespace SaveToFileWPF.Screens.MainWindow
     {
         #region Interfaces
 
-        private ISaver _saver;
+        private readonly ISaver _saver;
+        private readonly IExport _export;
 
         #endregion
 
         #region ObservableCollections
 
-        public ObservableCollection<UserViewModel> UserVMs { get; }
+        public ObservableCollection<UserViewModel> UserVMs { get; set; }
         public ObservableCollection<UserViewModel> SelectedVMs { get; }
-
-        #endregion
-
-        #region RelayCommands
-
-        public RelayCommand ExportToCSVCommand { get; set; }
-        public RelayCommand ExportToTXTCommand { get; set; }
+        public ObservableCollection<FileFormatViewModel> FileFormatVMs { get; }
 
         #endregion
 
         #region Constructors
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(ISaver saver, IExport export)
         {
+            _saver = saver;
+            _export = export;
+
             UserVMs = new ObservableCollection<UserViewModel>();
             SelectedVMs = new ObservableCollection<UserViewModel>();
-
-            ExportToCSVCommand = new RelayCommand(ExportToCSVFile);
-            ExportToTXTCommand = new RelayCommand(ExportToTXTFile);
+            FileFormatVMs = new ObservableCollection<FileFormatViewModel>();
 
             ReloadCommand.Execute(null);
         }
@@ -51,40 +45,7 @@ namespace SaveToFileWPF.Screens.MainWindow
         protected override void Load()
         {
             FillUpUserVMs();
-        }
-
-        #endregion
-
-        #region General functions
-
-        public void ExportToCSVFile(object o)
-        {
-            string path = DialogHelper.GetFilePath();
-
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            var stringResult = ObjectsToString(",");
-
-            _saver = new CSVSaver();
-            string fullPath = _saver.Save(path, stringResult);
-
-            DialogHelper.OpenFolderToDocument(fullPath);
-        }
-
-        public void ExportToTXTFile(object o)
-        {
-            string path = DialogHelper.GetFilePath();
-
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            var stringResult = ObjectsToString(" ");
-
-            _saver = new TextSaver();
-            string fullPath = _saver.Save(path, stringResult);
-
-            DialogHelper.OpenFolderToDocument(fullPath);
+            FillUpFileFormatVMs();
         }
 
         #endregion
@@ -97,13 +58,21 @@ namespace SaveToFileWPF.Screens.MainWindow
             UserVMs.Add(new UserViewModel("Olivia", 24, "Merlat"));
             UserVMs.Add(new UserViewModel("Oliver", 8, "Grand"));
             UserVMs.Add(new UserViewModel("Ava", 16, "Santa Linsrai"));
+
+            UserVMs = new ObservableCollection<UserViewModel>(UserVMs.OrderBy(u => u.Name));
+        }
+
+        private void FillUpFileFormatVMs()
+        {
+            FileFormatVMs.Add(new FileFormatViewModel("Экспорт в CSV", "csv", ExportToFile));
+            FileFormatVMs.Add(new FileFormatViewModel("Экспорт в TXT", "txt", ExportToFile));
         }
 
         private string ObjectsToString(string separator)
         {
             var stringBuilder = new StringBuilder();
 
-            foreach (var userVM in SelectedVMs)
+            foreach (var userVM in SelectedVMs.OrderBy(u => u.Name))
             {
                 stringBuilder.Append(userVM.Name + separator);
                 stringBuilder.Append(userVM.Age + separator);
@@ -112,6 +81,12 @@ namespace SaveToFileWPF.Screens.MainWindow
             }
 
             return stringBuilder.ToString();
+        }
+
+        private void ExportToFile(FileFormatViewModel fileFormatVM)
+        {
+            var stringResult = ObjectsToString(",");
+            _export.ExportToFile(_saver, fileFormatVM.FileFormat, stringResult);
         }
 
         #endregion

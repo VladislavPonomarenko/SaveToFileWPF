@@ -45,7 +45,6 @@ namespace SaveToFileWPF.Screens
         protected ViewModelBase()
         {
             ReloadCommand = new RelayCommand(OnReload, o => !Loading);
-            
         }
 
         private void OnReload(object o)
